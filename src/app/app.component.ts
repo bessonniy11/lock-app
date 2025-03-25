@@ -13,8 +13,15 @@ import { alert } from '@nativescript/core/ui/dialogs';
 export class AppComponent {
   isLoading: boolean = false;
   message: string = '';
+  hasWidget: boolean = false;
 
-  constructor(private floatingWidgetService: FloatingWidgetService) {}
+  constructor(private floatingWidgetService: FloatingWidgetService) {
+    this.updateWidgetState();
+  }
+
+  private updateWidgetState(): void {
+    this.hasWidget = this.floatingWidgetService.hasActiveWidget();
+  }
 
   showFloatingWidget(): void {
     this.isLoading = true;
@@ -36,6 +43,7 @@ export class AppComponent {
       } else {
         this.message = 'Виджет создан успешно!';
         console.log('Виджет создан успешно');
+        this.updateWidgetState();
       }
     }).catch(error => {
       this.isLoading = false;
@@ -51,17 +59,18 @@ export class AppComponent {
   }
 
   hideFloatingWidget(): void {
-    console.log('Hiding floating widget');
+    console.log('Removing floating widget');
     try {
-      this.floatingWidgetService.hideFloatingWidget();
-      this.message = 'Виджет скрыт';
+      this.floatingWidgetService.removeFloatingWidget();
+      this.message = 'Виджет удален';
+      this.updateWidgetState();
     } catch (error) {
-      console.error('Ошибка при скрытии виджета:', error);
-      this.message = 'Ошибка при скрытии виджета: ' + error;
+      console.error('Ошибка при удалении виджета:', error);
+      this.message = 'Ошибка при удалении виджета: ' + error;
       
       alert({
         title: "Ошибка",
-        message: "Произошла ошибка при скрытии виджета: " + error,
+        message: "Произошла ошибка при удалении виджета: " + error,
         okButtonText: "OK"
       });
     }

@@ -27,6 +27,12 @@ export class FloatingWidgetService {
   constructor() { }
 
   public async showFloatingWidget(): Promise<boolean> {
+    // Проверяем, существует ли уже виджет
+    if (this.floatingView !== null) {
+      console.log("Widget already exists, not creating a new one");
+      return true; // Виджет уже существует, возвращаем true
+    }
+
     console.log("Checking permission...");
     if (!this.checkDrawOverlayPermission()) {
       console.log("No permission, requesting...");
@@ -46,21 +52,7 @@ export class FloatingWidgetService {
   }
 
   public hideFloatingWidget(): void {
-    console.log("Attempting to hide widget");
-    if (this.floatingView !== null && this.windowManager !== null) {
-      try {
-        this.windowManager.removeView(this.floatingView);
-        this.floatingView = null;
-        console.log("Widget hidden successfully");
-      } catch (e) {
-        console.error('Error removing floating widget', e);
-      }
-    } else {
-      console.log("No widget to hide");
-    }
-
-    // Также скрываем наложение, если оно отображается
-    this.hideOverlay();
+    this.removeFloatingWidget(); // Теперь просто вызываем removeFloatingWidget
   }
 
   private checkDrawOverlayPermission(): boolean {
@@ -279,16 +271,68 @@ export class FloatingWidgetService {
   }
 
   private startInactivityTimer(): void {
-    this.inactivityTimer = setTimeout(() => {
-      this.floatingView.setAlpha(0.5); // Полупрозрачный
-    }, 3000); // 3 секунды
+    // Сначала очищаем предыдущий таймер, если он был
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = null;
+    }
+    
+    // Только если виджет существует, создаем таймер
+    if (this.floatingView) {
+      this.inactivityTimer = setTimeout(() => {
+        // Дополнительная проверка перед изменением прозрачности
+        if (this.floatingView) {
+          this.floatingView.setAlpha(0.5); // Полупрозрачный
+        }
+      }, 3000); // 3 секунды
+    }
   }
 
   private resetInactivityTimer(): void {
-    if (this.inactivityTimer) {
+    // Только если виджет существует
+    if (this.floatingView && this.inactivityTimer) {
       clearTimeout(this.inactivityTimer);
       this.floatingView.setAlpha(1); // Вернуть непрозрачность
       this.startInactivityTimer(); // Запустить таймер снова
     }
+  }
+
+  public removeFloatingWidget(): void {
+    console.log("Removing floating widget completely");
+    
+    // Очищаем таймер перед удалением виджета
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = null;
+    }
+    
+    // Пытаемся удалить и основной виджет и любые другие, которые могли остаться
+    if (this.windowManager !== null) {
+      try {
+        // Удаляем основной виджет, если он существует
+        if (this.floatingView !== null) {
+          this.windowManager.removeView(this.floatingView);
+          this.floatingView = null;
+          console.log("Main widget removed successfully");
+        }
+        
+        // Для удаления всех возможных плавающих виджетов из WindowManager,
+        // нам также нужно сбросить состояние
+        this.isLocked = false;
+        
+      } catch (e) {
+        console.error('Error removing floating widget', e);
+      }
+    } else {
+      console.log("No window manager to remove widgets from");
+    }
+
+    // Также удаляем наложение, если оно отображается
+    this.hideOverlay();
+  }
+
+  // Метод для проверки, существует ли уже виджет
+  public hasActiveWidget(): boolean {
+    return this.floatingView !== null;
   }
 } 

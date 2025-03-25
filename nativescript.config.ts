@@ -1,7 +1,7 @@
 import { NativeScriptConfig } from '@nativescript/core';
 
 export default {
-  id: 'org.nativescript.lock-app',
+  id: 'org.nativescript.lockscreen',
   appPath: 'src',
   appResourcesPath: 'App_Resources',
   android: {

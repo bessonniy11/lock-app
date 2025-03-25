@@ -2,8 +2,11 @@
     <Label text="Floating Widget Demo" class="text-center h1" style="font-size: 24; margin: 20 0 10 0;"></Label>
     
     <StackLayout orientation="horizontal" horizontalAlignment="center" margin="0 0 20 0">
-        <Button text="Показать виджет" (tap)="showFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #3F51B5; color: white;"></Button>
-        <Button text="Скрыть виджет" (tap)="hideFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #F44336; color: white;"></Button>
+        <!-- Показываем кнопку "Создать виджет" только если нет активного виджета -->
+        <Button *ngIf="!hasWidget" text="Создать виджет" (tap)="showFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #3F51B5; color: white;"></Button>
+        
+        <!-- Показываем кнопку "Удалить виджет" только если есть активный виджет -->
+        <Button *ngIf="hasWidget" text="Удалить виджет" (tap)="hideFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #F44336; color: white;"></Button>
     </StackLayout>
     
     <!-- Состояние и сообщения -->
@@ -16,7 +19,7 @@
         <Label [text]="message" textWrap="true" horizontalAlignment="center"></Label>
     </StackLayout>
     
-    <Label text="Нажмите 'Показать виджет' чтобы отобразить плавающий виджет, который можно перемещать по экрану." textWrap="true" margin="20 0 0 0" style="text-align: center; font-size: 16;"></Label>
+    <Label text="Нажмите 'Создать виджет' чтобы отобразить плавающий виджет, который можно перемещать по экрану." textWrap="true" margin="20 0 0 0" style="text-align: center; font-size: 16;"></Label>
     
     <Label text="Если это первый запуск, приложение запросит разрешение на отображение поверх других приложений." textWrap="true" margin="10 0 0 0" style="text-align: center; font-size: 14; color: #666;"></Label>
 </StackLayout>

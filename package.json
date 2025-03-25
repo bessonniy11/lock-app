@@ -1,8 +1,11 @@
 {
-  "name": "lock-app",
+  "name": "lock-screen",
   "main": "src/main.ts",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "start": "ns run android"
+  },
   "dependencies": {
     "@angular/animations": "~19.0.0",
     "@angular/common": "~19.0.0",
@@ -20,6 +23,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~19.0.0",
     "@angular/compiler-cli": "~19.0.0",
+    "@babel/traverse": "^7.27.0",
     "@nativescript/android": "8.9.1",
     "@nativescript/tailwind": "^2.1.0",
     "@nativescript/types": "~8.9.0",
