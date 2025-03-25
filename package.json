@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ns run android",
     "clean": "ns clean",
-    "build:debug": "ns build android --copy-to ./builds/lockscreen.apk",
+    "build:debug": "ns build android --copy-to ./build/lockscreen.apk",
     "build:release": "ns build android --release --keyStorePath ./keystore/key.jks --keyStorePassword YOUR_PASSWORD --keyStoreAlias lock_app --keyStoreAliasPassword YOUR_PASSWORD --copy-to ./app-release.apk",
     "build": "npm run build:debug"
   },
