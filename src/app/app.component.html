@@ -6,7 +6,7 @@
         <Button *ngIf="!hasWidget" text="Создать виджет" (tap)="showFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #3F51B5; color: white;"></Button>
         
         <!-- Показываем кнопку "Удалить виджет" только если есть активный виджет -->
-        <Button *ngIf="hasWidget" text="Удалить виджет" (tap)="hideFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #F44336; color: white;"></Button>
+        <!-- <Button *ngIf="hasWidget" text="Удалить виджет" (tap)="hideFloatingWidget()" margin="10" [isEnabled]="!isLoading" style="background-color: #F44336; color: white;"></Button> -->
     </StackLayout>
     
     <!-- Состояние и сообщения -->
@@ -19,7 +19,9 @@
         <Label [text]="message" textWrap="true" horizontalAlignment="center"></Label>
     </StackLayout>
     
-    <Label text="Нажмите 'Создать виджет' чтобы отобразить плавающий виджет, который можно перемещать по экрану." textWrap="true" margin="20 0 0 0" style="text-align: center; font-size: 16;"></Label>
+    <Label text="Нажмите 'Создать виджет' чтобы отобразить плавающий виджет, который можно перемещать по экрану." textWrap="true" margin="20 10 0 10" style="text-align: center; font-size: 16;"></Label>
     
-    <Label text="Если это первый запуск, приложение запросит разрешение на отображение поверх других приложений." textWrap="true" margin="10 0 0 0" style="text-align: center; font-size: 14; color: #666;"></Label>
+    <Label text="Если это первый запуск, приложение запросит разрешение на отображение поверх других приложений." textWrap="true" margin="10 5 0 5" style="text-align: center; font-size: 22; color: #484848;"></Label>
+    
+    <Label text="Для удаления виджета переместите его в верхнюю часть экрана" textWrap="true" margin="20 10 0 10" style="text-align: center; font-size: 14; font-weight: 600; color: #6e2323;"></Label>
 </StackLayout>

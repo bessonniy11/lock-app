@@ -1,7 +1,8 @@
-import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NativeScriptModule } from '@nativescript/angular';
 import { FloatingWidgetService } from './services/floating-widget.service';
 import { alert } from '@nativescript/core/ui/dialogs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ns-app',
@@ -10,17 +11,26 @@ import { alert } from '@nativescript/core/ui/dialogs';
   schemas: [NO_ERRORS_SCHEMA],
   standalone: true
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   isLoading: boolean = false;
   message: string = '';
   hasWidget: boolean = false;
+  private widgetSubscription: Subscription;
 
-  constructor(private floatingWidgetService: FloatingWidgetService) {
-    this.updateWidgetState();
+  constructor(private floatingWidgetService: FloatingWidgetService, private cdr: ChangeDetectorRef) {
+    this.widgetSubscription = this.floatingWidgetService.hasWidget$.subscribe(hasActive => {
+      // console.log('hasActive', hasActive);
+      this.hasWidget = hasActive; // Обновляем локальное состояние
+      // console.log('this.hasWidget ', this.hasWidget);
+      this.cdr.detectChanges(); // Вызываем обнаружение изменений
+      if (!this.hasWidget) {
+        this.message = 'Виджет удалён успешно!';
+      }
+    });
   }
 
-  private updateWidgetState(): void {
-    this.hasWidget = this.floatingWidgetService.hasActiveWidget();
+  ngOnDestroy() {
+    this.widgetSubscription.unsubscribe(); // Отписываемся при уничтожении компонента
   }
 
   showFloatingWidget(): void {
@@ -43,7 +53,6 @@ export class AppComponent {
       } else {
         this.message = 'Виджет создан успешно!';
         console.log('Виджет создан успешно');
-        this.updateWidgetState();
       }
     }).catch(error => {
       this.isLoading = false;
@@ -61,9 +70,8 @@ export class AppComponent {
   hideFloatingWidget(): void {
     console.log('Removing floating widget');
     try {
-      this.floatingWidgetService.removeFloatingWidget();
+      this.floatingWidgetService.removeAllFloatingWidgets();
       this.message = 'Виджет удален';
-      this.updateWidgetState();
     } catch (error) {
       console.error('Ошибка при удалении виджета:', error);
       this.message = 'Ошибка при удалении виджета: ' + error;
